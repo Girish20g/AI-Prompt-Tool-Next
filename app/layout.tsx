@@ -1,9 +1,10 @@
+import Navbar from "@components/Navbar";
 import "@styles/globals.css";
 import { Metadata } from "next";
 
-export const metaData: Metadata = {
-  title: "Promp Engineering Tool",
-  description: "Discover and Share AI Prompts",
+export const metadata: Metadata = {
+  title: "PromptForge",
+  description: "Discover & Share AI Prompt",
 };
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
@@ -13,7 +14,10 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         <div className="main">
           <div className="gradient" />
         </div>
-        <main className="app">{children}</main>
+        <main className="app">
+          <Navbar />
+          {children}
+        </main>
       </body>
     </html>
   );
