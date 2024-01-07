@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 const Navbar = () => {
   const isUserLoggedIn = true;
   const [providers, setProviders] = useState<Record<string, any> | null>(null);
+  const [toggleDropDown, setToggleDropDown] = useState<boolean>(false);
 
   useEffect(() => {
     const setProvidersFn = async () => {
@@ -35,7 +36,7 @@ const Navbar = () => {
         {isUserLoggedIn ? (
           <div className="flex gap-3 md:gap-5">
             <Link href="/create-prompt" className="black_btn">
-              Create Post
+              Create Prompt
             </Link>
             <button
               type="button"
@@ -81,8 +82,38 @@ const Navbar = () => {
               className="rounded-full"
               width={37}
               height={37}
-              onClick={() => {}}
+              onClick={() => {
+                setToggleDropDown((prevState: boolean) => !prevState);
+              }}
             />
+            {toggleDropDown && (
+              <div className="dropdown">
+                <Link
+                  href="/profile"
+                  className="dropdown_link"
+                  onClick={() => setToggleDropDown(false)}
+                >
+                  My Profile
+                </Link>
+                <Link
+                  href="/create-prompt"
+                  className="dropdown_link"
+                  onClick={() => setToggleDropDown(false)}
+                >
+                  Create Prompt
+                </Link>
+                <button
+                  type="button"
+                  className="mt-5 w-full black_btn"
+                  onClick={() => {
+                    setToggleDropDown(false);
+                    signOut();
+                  }}
+                >
+                  Sign Out
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <>
