@@ -3,14 +3,21 @@
 import { useState } from "react";
 import Image from "next/image";
 import { MainPrompt } from "@utils/typeDefinitions/promptType";
+import { useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 
 interface PromptCardProps {
   prompt: MainPrompt;
-  handleTagClick: () => void;
+  handleTagClick?: (prompt: MainPrompt) => void;
+  handleEdit?: (prompt: MainPrompt) => void;
+  handleDelete?: (prompt: MainPrompt) => void;
 }
 
 const PromptCard = (props: PromptCardProps) => {
-  const { prompt, handleTagClick } = props;
+  const { data: session } = useSession();
+  const pathName = usePathname();
+  const router = useRouter();
+  const { prompt, handleTagClick, handleEdit, handleDelete } = props;
 
   const [copied, setCopied] = useState<string>("");
 
@@ -21,6 +28,7 @@ const PromptCard = (props: PromptCardProps) => {
       setCopied("");
     }, 3000);
   };
+
   return (
     <div className="prompt_card">
       <div className="flex justify-between items-start gap-5">
@@ -61,6 +69,24 @@ const PromptCard = (props: PromptCardProps) => {
       >
         #{prompt.tag}
       </p>
+      {session &&
+        (session?.user as any).id === prompt.creator._id &&
+        pathName === "/profile" && (
+          <div className="mt-5 flex-center gap-4 border-t border-gray-100 pt-3">
+            <p
+              className="font-inter text-sm green_gradient cursor-pointer"
+              onClick={() => handleEdit && handleEdit(prompt)}
+            >
+              Edit
+            </p>
+            <p
+              className="font-inter text-sm orange_gradient cursor-pointer"
+              onClick={() => handleDelete && handleDelete(prompt)}
+            >
+              Delete
+            </p>
+          </div>
+        )}
     </div>
   );
 };

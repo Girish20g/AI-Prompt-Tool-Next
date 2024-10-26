@@ -6,7 +6,7 @@ import { MainPrompt } from "@utils/typeDefinitions/promptType";
 
 const PromptCardList = (props: { data: any[]; handleTagClick: () => void }) => {
   return (
-    <div className="mt-16">
+    <div className="mt-16 prompt_layout">
       {props.data.map((prompt: MainPrompt) => (
         <PromptCard
           key={prompt._id}
