@@ -8,8 +8,8 @@ interface ProfileProps {
   name: string;
   desc: string;
   data: MainPrompt[];
-  handleEdit: () => void;
-  handleDelete: () => void;
+  handleEdit: (prompt: MainPrompt) => void;
+  handleDelete: (prompt: MainPrompt) => void;
 }
 
 const Profile = (props: ProfileProps) => {
