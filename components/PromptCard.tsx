@@ -8,7 +8,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 interface PromptCardProps {
   prompt: MainPrompt;
-  handleTagClick?: (prompt: MainPrompt) => void;
+  handleTagClick?: (tag: string) => void;
   handleEdit?: (prompt: MainPrompt) => void;
   handleDelete?: (prompt: MainPrompt) => void;
 }
@@ -29,10 +29,22 @@ const PromptCard = (props: PromptCardProps) => {
     }, 3000);
   };
 
+  const handleProfileClick = () => {
+    if (session && prompt.creator._id === (session?.user as any).id)
+      return router.push("/profile");
+
+    router.push(
+      `/profile/${prompt.creator._id}?name=${prompt.creator.username}`
+    );
+  };
+
   return (
     <div className="prompt_card">
       <div className="flex justify-between items-start gap-5">
-        <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer">
+        <div
+          className="flex-1 flex justify-start items-center gap-3 cursor-pointer"
+          onClick={handleProfileClick}
+        >
           <Image
             src={prompt.creator.image}
             alt="user_image"
@@ -65,7 +77,9 @@ const PromptCard = (props: PromptCardProps) => {
       <p className="my-4 font-satoshi text-sm text-gray-700">{prompt.prompt}</p>
       <p
         className="font-inter text-sm blue_gradient cursor-pointer"
-        onClick={() => {}}
+        onClick={() => {
+          handleTagClick && handleTagClick(prompt.tag);
+        }}
       >
         #{prompt.tag}
       </p>

@@ -1,15 +1,17 @@
 "use client";
 
 import { MainPrompt } from "@utils/typeDefinitions/promptType";
+
 import React from "react";
 import PromptCard from "./PromptCard";
+import { capitalizeFirstLetter } from "@utils/helpers";
 
 interface ProfileProps {
   name: string;
   desc: string;
   data: MainPrompt[];
-  handleEdit: (prompt: MainPrompt) => void;
-  handleDelete: (prompt: MainPrompt) => void;
+  handleEdit?: (prompt: MainPrompt) => void;
+  handleDelete?: (prompt: MainPrompt) => void;
 }
 
 const Profile = (props: ProfileProps) => {
@@ -17,7 +19,9 @@ const Profile = (props: ProfileProps) => {
   return (
     <section className="w-full">
       <h1 className="head_text text-left">
-        <span className="blue_gradient">{name} Profile</span>
+        <span className="blue_gradient">
+          {capitalizeFirstLetter(name)} Profile
+        </span>
       </h1>
       <p className="desc text-left">{desc}</p>
       <div className="mt-10 prompt_layout">
