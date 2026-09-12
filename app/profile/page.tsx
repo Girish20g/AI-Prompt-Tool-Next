@@ -20,10 +20,10 @@ const MyProfile = () => {
       const data = await response.json();
       setPrompts(data);
     };
-    if ((session?.user as any).id) {
+    if ((session?.user as any)?.id) {
       fetchPosts();
     }
-  }, []);
+  }, [session]);
 
   const handleEdit = (prompt: MainPrompt) => {
     router.push(`/update-prompt?id=${prompt._id}`);

@@ -1,6 +1,8 @@
 import Prompt from "@models/prompt";
 import { connectToDb } from "@utils/database";
 
+export const dynamic = "force-dynamic";
+
 export const GET = async (request: any, { params }: any) => {
   try {
     await connectToDb();

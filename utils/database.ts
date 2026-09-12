@@ -1,24 +1,34 @@
-import mongoose, { ConnectOptions } from "mongoose";
+import mongoose from "mongoose";
 
-let isConnected: boolean = false;
+declare global {
+  // eslint-disable-next-line no-var
+  var mongooseConnection: Promise<typeof mongoose> | undefined;
+}
 
 export const connectToDb = async () => {
   mongoose.set("strictQuery", true);
 
-  if (isConnected) {
-    console.log("MongoDB is already Connected");
-    return;
+  if (mongoose.connection.readyState === 1) {
+    return mongoose;
+  }
+
+  if (mongoose.connection.readyState === 0) {
+    global.mongooseConnection = undefined;
+  }
+
+  if (!global.mongooseConnection) {
+    const uri = process.env.MONGODB_URI;
+    if (!uri) throw new Error("MONGODB_URI is not configured");
+
+    global.mongooseConnection = mongoose.connect(uri, {
+      dbName: "share_prompt",
+    });
   }
 
   try {
-    await mongoose.connect(process.env.MONGODB_URI as string, {
-      dbName: "share_prompt",
-    });
-
-    isConnected = true;
-
-    console.log("MongoDB Connected");
+    return await global.mongooseConnection;
   } catch (error) {
-    console.log(error);
+    global.mongooseConnection = undefined;
+    throw error;
   }
 };

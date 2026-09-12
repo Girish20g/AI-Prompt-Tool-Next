@@ -6,6 +6,8 @@ interface Params {
   id: string;
 }
 
+export const dynamic = "force-dynamic";
+
 //GET (read)
 export const GET = async (
   request: NextRequest,
