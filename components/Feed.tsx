@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import PromptCard from "./PromptCard";
+import PromptLoader from "./PromptLoader";
 import { MainPrompt } from "@utils/typeDefinitions/promptType";
 
 const PromptCardList = (props: {
@@ -26,12 +27,21 @@ const Feed = () => {
   const [searchTimeOut, setSearchTimeOut] = useState<any>(null);
   const [searchedPrompts, setSearchedPrompts] = useState<MainPrompt[]>([]);
   const [prompts, setPrompts] = useState<MainPrompt[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch("/api/prompt", { cache: "no-store" });
-      const data = await response.json();
-      setPrompts(data);
+      try {
+        const response = await fetch("/api/prompt", { cache: "no-store" });
+        if (!response.ok) throw new Error("Failed to fetch prompts");
+
+        const data = await response.json();
+        setPrompts(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchPosts();
   }, []);
@@ -78,10 +88,14 @@ const Feed = () => {
           className="search_input peer"
         />
       </form>
-      <PromptCardList
-        data={searchText ? searchedPrompts : prompts}
-        handleTagClick={handleTagClick}
-      />
+      {loading ? (
+        <PromptLoader />
+      ) : (
+        <PromptCardList
+          data={searchText ? searchedPrompts : prompts}
+          handleTagClick={handleTagClick}
+        />
+      )}
     </section>
   );
 };

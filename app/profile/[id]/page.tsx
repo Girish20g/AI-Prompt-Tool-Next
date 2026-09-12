@@ -3,19 +3,31 @@
 import { useState, useEffect } from "react";
 
 import Profile from "@components/Profile";
+import { MainPrompt } from "@utils/typeDefinitions/promptType";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const UserProfile = ({ params }: { params: { id: string } }) => {
-  const [prompts, setPrompts] = useState([]);
+  const [prompts, setPrompts] = useState<MainPrompt[]>([]);
+  const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
   const username: string = searchParams.get("name") ?? "";
   const router = useRouter();
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch(`/api/users/${params.id}/prompts`);
-      const data = await response.json();
-      setPrompts(data);
+      try {
+        const response = await fetch(`/api/users/${params.id}/prompts`, {
+          cache: "no-store",
+        });
+        if (!response.ok) throw new Error("Failed to fetch profile prompts");
+
+        const data = await response.json();
+        setPrompts(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     };
     if (params.id) {
       fetchPosts();
@@ -27,6 +39,7 @@ const UserProfile = ({ params }: { params: { id: string } }) => {
       name={username}
       desc={`Welcome to ${username}'s personalized profile. Explore ${username}'s exceptional prompts and be inspired by the power of their imagination.`}
       data={prompts}
+      loading={loading}
     />
   );
 };
